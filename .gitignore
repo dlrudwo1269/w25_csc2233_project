@@ -176,3 +176,4 @@ cython_debug/
 # Don't track the data folder
 recipe1M/
 data/
+raw_data/
