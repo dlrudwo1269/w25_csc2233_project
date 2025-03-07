@@ -13,3 +13,9 @@ for dist in "${distributions[@]}"; do
     echo "Processing $dist distribution"
     python data_prepare/convert_fvec_base_vectors.py --popularity_distribution "$dist"
 done
+
+# 3. Compute ground truth closest vectors for each query
+for dist in "${distributions[@]}"; do
+    echo "Processing $dist distribution"
+    python data_prepare/compute_ground_truth.py --popularity_distribution "$dist"
+done
