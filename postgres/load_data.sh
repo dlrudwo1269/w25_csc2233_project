@@ -1,0 +1,1 @@
+psql -U vectordb -f ./load_data.sql
