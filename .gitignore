@@ -176,3 +176,4 @@ cython_debug/
 # Don't track the data folder
 raw_data/
 processed_data/
+sql/
