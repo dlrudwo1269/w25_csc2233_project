@@ -71,7 +71,7 @@ if  __name__ == "__main__":
         help="Path to the queries fvecs file."
     )
     parser.add_argument(
-        "--output_path", type=str, help="Path to store results", default="./sql/query.sql"
+        "--output_path", type=str, help="Path to store results"
     )
     parser.add_argument(
         "--top_k", type=int, default=50, help="How many top k results to get"
@@ -85,4 +85,11 @@ if  __name__ == "__main__":
     else:
         selectivity_stats_path = args.selectivity_stats_path
 
-    query_generate(args.queries_path, args.selectivity, selectivity_stats_path, args.output_path, args.top_k)
+    if not args.popularity_distribution and not args.output_path:
+        raise ValueError("Please provide either a popularity distribution or the output file name.")
+    elif args.popularity_distribution:
+        output_path = f"./sql/{args.popularity_distribution}_threshold{args.selectivity}_query.sql"
+    else:
+        output_path = args.output_path
+
+    query_generate(args.queries_path, args.selectivity, selectivity_stats_path, output_path, args.top_k)
