@@ -2,7 +2,7 @@ set -e  # Exit on error
 set -o pipefail
 
 # Configuration variables - modify these as needed
-INSTALL_DIR="$HOME/msvbase_install"
+INSTALL_DIR="$HOME/w25_csc2233_project/msvbase_install"
 PG_INSTALL_DIR="$INSTALL_DIR/postgres"
 PGDATA="$INSTALL_DIR/pgdata"
 MSVBASE_DIR="$INSTALL_DIR/MSVBASE"
