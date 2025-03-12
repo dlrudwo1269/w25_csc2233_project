@@ -2,7 +2,7 @@ set -e  # Exit on error
 set -o pipefail
 
 # Configuration variables - modify these as needed
-INSTALL_DIR="$HOME/w25_csc2233_project/msvbase_install"
+INSTALL_DIR="$PWD/msvbase_install"
 PG_INSTALL_DIR="$INSTALL_DIR/postgres"
 PGDATA="$INSTALL_DIR/pgdata"
 MSVBASE_DIR="$INSTALL_DIR/MSVBASE"
@@ -516,8 +516,6 @@ print_section "Starting PostgreSQL"
 print_section "Creating database and installing extension"
 "$PG_INSTALL_DIR/bin/createdb" "$PGDATABASE"
 "$PG_INSTALL_DIR/bin/psql" -d "$PGDATABASE" -c "CREATE EXTENSION vectordb;"
-
-
 
 # If we reach here, installation was successful
 print_section "Installation completed successfully!"
