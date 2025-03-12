@@ -34,6 +34,6 @@ fi
 
 # Run the SQL script with the data path
 echo "Running SQL script with data path: $DATA_PATH"
-$PWD/msvbase_install/postgres/bin/psql -d vectordb -v data_path="'$DATA_PATH'" -f $PWD/postgres/load_data.sql
+$PWD/msvbase_install/postgres/bin/psql -d vectordb -v data_path="$DATA_PATH" -f $PWD/postgres/load_data.sql
 
 echo "Data loading completed successfully."
