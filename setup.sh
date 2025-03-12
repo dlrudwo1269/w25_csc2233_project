@@ -502,8 +502,13 @@ echo "shared_preload_libraries = 'vectordb'" >> "$PGDATA/postgresql.conf"
 # Navigate to the extension directory
 cd $PG_INSTALL_DIR/share/extension/
 
-# Create a symbolic link with the correct version number
-ln -s vectordb.sql vectordb--0.1.0.sql
+# Create a symbolic link with the correct version number only if it doesn't exist
+if [ ! -f vectordb--0.1.0.sql ]; then
+    ln -s vectordb.sql vectordb--0.1.0.sql
+    echo "Created symbolic link for vectordb--0.1.0.sql"
+else
+    echo "Symbolic link vectordb--0.1.0.sql already exists, skipping"
+fi
 
 # Alternatively, you could copy the file
 # cp vectordb.sql vectordb--0.1.0.sql
