@@ -1,18 +1,3 @@
--- Check if the database exists and create it if it doesn't
-DO
-$$
-BEGIN
-   IF NOT EXISTS (
-      SELECT FROM pg_database
-      WHERE datname = 'test_db'
-   ) THEN
-      PERFORM dblink_exec('dbname=postgres', 'CREATE DATABASE test_db');
-   END IF;
-END
-$$;
-
--- Connect to the database
-\c test_db;
 
 -- Create the extension if it doesn't exist
 CREATE EXTENSION IF NOT EXISTS vectordb;
