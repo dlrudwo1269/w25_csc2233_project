@@ -57,6 +57,7 @@ SQL_DIR="$PROJECT_DIR/postgres/sql"
 OUTPUT_FILE="$RESULT_DIR/gt_${DISTRIBUTION}_${SELECTIVITY}.out"
 SQL_FILE="${DISTRIBUTION}_threshold${SELECTIVITY}_query.sql"
 SQL_PATH="$SQL_DIR/$SQL_FILE"
+SELECTIVITY_STATS_PATH="$PROJECT_DIR/processed_data/selectivity_stats/sift_base_${DISTRIBUTION}_stats.txt"
 
 # Create result directory if it doesn't exist
 if [ ! -d "$RESULT_DIR" ]; then
@@ -77,7 +78,8 @@ python3 "$PROJECT_DIR/postgres/generate_query.py" \
   --selectivity "$SELECTIVITY" \
   --popularity_distribution "$DISTRIBUTION" \
   --output_path "$SQL_PATH" \
-  --top_k "$TOP_K"
+  --top_k "$TOP_K" \
+  --selectivity_stats_path "$SELECTIVITY_STATS_PATH"
 
 # Check if the query file was created
 if [ ! -f "$SQL_PATH" ]; then

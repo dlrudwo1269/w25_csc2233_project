@@ -88,8 +88,6 @@ if  __name__ == "__main__":
 
     if not args.popularity_distribution and not args.output_path:
         raise ValueError("Please provide either a popularity distribution or the output file name.")
-    elif args.popularity_distribution:
-        output_path = f"./sql/{args.popularity_distribution}_threshold{args.selectivity}_query.sql"
     else:
         output_path = args.output_path
 
