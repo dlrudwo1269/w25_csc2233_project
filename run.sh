@@ -1,5 +1,28 @@
 #!/bin/bash
 
+# Default values
+DISTRIBUTION="normal"
+SELECTIVITY=10
+
+# Parse command line arguments
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --distribution)
+      DISTRIBUTION="$2"
+      shift 2
+      ;;
+    --selectivity)
+      SELECTIVITY="$2"
+      shift 2
+      ;;
+    *)
+      echo "Unknown option: $1"
+      echo "Usage: $0 [--distribution TYPE] [--selectivity VALUE]"
+      exit 1
+      ;;
+  esac
+done
+
 # Make setup.sh executable
 chmod +x $PWD/setup.sh
 
@@ -23,5 +46,5 @@ rm -rf raw_data
 # Make the PostgreSQL run script executable
 chmod +x $PWD/postgres/run.sh
 
-# Run the PostgreSQL script
-$PWD/postgres/run.sh
+# Run the PostgreSQL script with the parameters
+$PWD/postgres/run.sh --distribution $DISTRIBUTION --selectivity $SELECTIVITY
