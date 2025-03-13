@@ -31,7 +31,7 @@ def query_generate(queries_path, selectivity, selectivity_stats_path, output_pat
     with open(queries_path, 'r', encoding="utf8") as f_emb, \
          open(output_path,'w',encoding="utf8") as out:
         idx = 0
-        out.write("\\c test_db;\n\n")
+        out.write("\\c vectordb;\n\n")
         out.write("create index if not exists bindex on sift_table(popularity);\n");
         out.write("set enable_seqscan=off;\n")
         out.write("set enable_indexscan=on;\n")
@@ -87,8 +87,6 @@ if  __name__ == "__main__":
 
     if not args.popularity_distribution and not args.output_path:
         raise ValueError("Please provide either a popularity distribution or the output file name.")
-    elif args.popularity_distribution:
-        output_path = f"./sql/{args.popularity_distribution}_threshold{args.selectivity}_query.sql"
     else:
         output_path = args.output_path
 
