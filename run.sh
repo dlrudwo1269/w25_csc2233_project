@@ -48,3 +48,8 @@ chmod +x $PWD/postgres/run.sh
 
 # Run the PostgreSQL script with the parameters
 $PWD/postgres/run.sh --distribution $DISTRIBUTION --selectivity $SELECTIVITY
+
+# Clean up the table after experiment is done
+echo "Cleaning up the sift_table..."
+$PWD/msvbase_install/postgres/bin/psql -d vectordb -c "DROP TABLE IF EXISTS sift_table;"
+echo "Table cleanup complete."

@@ -45,16 +45,9 @@ cleanup() {
             "$PG_INSTALL_DIR/bin/pg_ctl" -D "$PGDATA" stop -m immediate
         fi
         
-        # Ask user if they want to remove pgdata
-        read -p "Do you want to remove pgdata directory ($PGDATA)? (y/n) " -n 1 -r
-        echo
-        if [[ $REPLY =~ ^[Yy]$ ]]; then
-            print_section "Removing pgdata directory"
-            rm -rf "$PGDATA"
-            echo "Removed $PGDATA"
-        else
-            print_warning "Keeping pgdata directory at $PGDATA"
-        fi
+        rm -rf "$PGDATA"
+        echo "Removed $PGDATA"
+       
     fi
 }
 
