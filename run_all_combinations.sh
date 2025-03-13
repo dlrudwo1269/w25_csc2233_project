@@ -9,12 +9,12 @@ chmod +x run.sh
 ./run.sh --distribution normal --selectivity 100
 
 
-./run.sh --distribution zipfine --selectivity 1
-./run.sh --distribution zipfine --selectivity 10
-./run.sh --distribution zipfine --selectivity 50
-./run.sh --distribution zipfine --selectivity 90
-./run.sh --distribution zipfine --selectivity 99
-./run.sh --distribution zipfine --selectivity 100
+./run.sh --distribution zipfian --selectivity 1
+./run.sh --distribution zipfian --selectivity 10
+./run.sh --distribution zipfian --selectivity 50
+./run.sh --distribution zipfian --selectivity 90
+./run.sh --distribution zipfian --selectivity 99
+./run.sh --distribution zipfian --selectivity 100
 
 ./run.sh --distribution uniform --selectivity 1
 ./run.sh --distribution uniform --selectivity 10
