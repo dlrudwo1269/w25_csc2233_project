@@ -6,6 +6,7 @@ PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 # Default values
 SELECTIVITY=1
 DISTRIBUTION="normal"
+TOP_K=50
 
 # Parse command line arguments
 while [[ $# -gt 0 ]]; do
@@ -18,11 +19,16 @@ while [[ $# -gt 0 ]]; do
       DISTRIBUTION="$2"
       shift 2
       ;;
+    --top_k)
+      TOP_K="$2"
+      shift 2
+      ;;
     *)
       echo "Unknown option: $1"
-      echo "Usage: $0 [--selectivity VALUE] [--distribution TYPE]"
+      echo "Usage: $0 [--selectivity VALUE] [--distribution TYPE] [--top_k VALUE]"
       echo "  --selectivity: Selectivity value (must be one of: 1, 10, 50, 90, 99, 100)"
       echo "  --distribution: Distribution type (must be one of: normal, zipfian, uniform, log_normal)"
+      echo "  --top_k: Number of top results to retrieve (default: 50)"
       exit 1
       ;;
   esac
@@ -42,7 +48,7 @@ if [[ ! "$DISTRIBUTION" =~ ^(normal|zipfian|uniform|log_normal)$ ]]; then
   exit 1
 fi
 
-echo "Running query with selectivity=$SELECTIVITY and distribution=$DISTRIBUTION"
+echo "Running query with selectivity=$SELECTIVITY, distribution=$DISTRIBUTION, top_k=$TOP_K"
 
 # Define paths
 PG_INSTALL_DIR="$PROJECT_DIR/msvbase_install/postgres"
@@ -66,7 +72,12 @@ fi
 
 # Generate query based on parameters
 echo "Generating query..."
-python3 "$PROJECT_DIR/postgres/generate_query.py" --selectivity "$SELECTIVITY" --popularity_distribution "$DISTRIBUTION"
+cd "$PROJECT_DIR"  # Change to project directory before running the Python script
+python3 "$PROJECT_DIR/postgres/generate_query.py" \
+  --selectivity "$SELECTIVITY" \
+  --popularity_distribution "$DISTRIBUTION" \
+  --output_path "$SQL_PATH" \
+  --top_k "$TOP_K"
 
 # Check if the query file was created
 if [ ! -f "$SQL_PATH" ]; then
