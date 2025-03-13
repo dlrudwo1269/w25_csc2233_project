@@ -1,3 +1,4 @@
+#!/bin/sh
 chmod +x run.sh
 
 run.sh --distribution normal --selectivity 1
