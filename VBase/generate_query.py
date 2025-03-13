@@ -37,16 +37,39 @@ def query_generate(queries_path, selectivity, selectivity_stats_path, output_pat
         out.write("set enable_indexscan=on;\n")
 
         for embedding in f_emb:
-            embedding=embedding[1:-1] # remove enclosing { and }
+            # Clean and properly format the embedding
+            embedding = embedding.strip()
             
-            out.write("\\timing on\n")
-            out.write(f"select id from sift_table where (popularity<={popularity_threshold}) order by sift_vector<*>ARRAY[{embedding}] limit {top_k};\n")
-            out.write("\\timing off\n")
-            idx += 1
-            if idx%1000 == 0:
-                print(f"{idx} document embeddings saved...")
-            if idx==10000:
-                break
+            # Remove enclosing brackets if present
+            if embedding.startswith('{') and embedding.endswith('}'):
+                embedding = embedding[1:-1]
+            elif embedding.startswith('[') and embedding.endswith(']'):
+                embedding = embedding[1:-1]
+                
+            # Split the embedding into individual values
+            try:
+                # Try to split by comma
+                values = [float(val.strip()) for val in embedding.split(',') if val.strip()]
+                
+                # If that doesn't work, try splitting by space
+                if len(values) <= 1 and ' ' in embedding:
+                    values = [float(val.strip()) for val in embedding.split() if val.strip()]
+                
+                # Format the array properly for PostgreSQL
+                formatted_embedding = "ARRAY[" + ", ".join(str(val) for val in values) + "]"
+                
+                out.write("\\timing on\n")
+                out.write(f"select vector_id from sift_table where (popularity<={popularity_threshold}) order by sift_vector<*>{formatted_embedding} limit {top_k};\n")
+                out.write("\\timing off\n")
+                idx += 1
+                if idx%1000 == 0:
+                    print(f"{idx} document embeddings saved...")
+                if idx==10000:
+                    break
+            except Exception as e:
+                print(f"Warning: Could not parse embedding: {embedding[:30]}... - {str(e)}")
+                continue
+
 
 
 if  __name__ == "__main__":
