@@ -24,9 +24,9 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Run load_data.sh with the distribution parameter
-chmod +x $PWD/postgres/load_data.sh
-$PWD/postgres/load_data.sh --distribution $DISTRIBUTION
+chmod +x $PWD/VBase/load_data.sh
+$PWD/VBase/load_data.sh --distribution $DISTRIBUTION
 
 # Run query.sh with both distribution and selectivity parameters
-chmod +x $PWD/postgres/query.sh
-$PWD/postgres/query.sh --selectivity $SELECTIVITY --distribution $DISTRIBUTION
+chmod +x $PWD/VBase/query.sh
+$PWD/VBase/query.sh --selectivity $SELECTIVITY --distribution $DISTRIBUTION
