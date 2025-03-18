@@ -9,7 +9,7 @@ def get_id(path_id):
     with open(path_id, 'r', encoding="utf8") as f_data:
         ids=[]
         tsv_data= csv.reader(f_data, delimiter="\t")
-        for (id, _) in tsv_data:
+        for id in tsv_data:
             ids.append(id)
         return ids
 
