@@ -9,8 +9,8 @@ def get_id(path_id):
     with open(path_id, 'r', encoding="utf8") as f_data:
         ids=[]
         tsv_data= csv.reader(f_data, delimiter="\t")
-        for id in tsv_data:
-            ids.append(id)
+        for row in tsv_data:
+            ids.append(row[0])  # Only take the first column (ID)
         return ids
 
 def parse_result(path_result,ids):
