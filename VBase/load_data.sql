@@ -1,12 +1,40 @@
-create database test_db;
-\c test_db;
+-- Create the extension if it doesn't exist
+CREATE EXTENSION IF NOT EXISTS vectordb;
 
-CREATE EXTENSION vectordb;
+CREATE TABLE IF NOT EXISTS sift_table (
+    vector_id int PRIMARY KEY,
+    popularity float8,
+    sift_vector float8[128]
+);
 
-create table sift_table(vector_id int PRIMARY KEY, popularity float8, sift_vector float8[128]);
-alter table sift_table alter sift_vector set storage plain;
+-- Alter the table to set storage if it exists
+DO
+$$
+BEGIN
+   IF EXISTS (
+      SELECT FROM information_schema.tables 
+      WHERE table_name = 'sift_table'
+   ) THEN
+      ALTER TABLE sift_table ALTER sift_vector SET STORAGE PLAIN;
+   END IF;
+END
+$$;
 
-copy sift_table from 'processed_data/base_vectors/sift_base_<distribution-name>.tsv' DELIMITER E'\t' csv quote e'\x01';
+-- Copy data into the table
+COPY sift_table FROM :'data_path' DELIMITER E'\t' CSV QUOTE E'\x01';
 
-create index hnsw_index on sift_table using hnsw(sift_vector hnsw_vector_inner_product_ops) with(dimension=128, distmethod=inner_product);
-create index bindex on sift_table(popularity);
+create index if not exists hnsw_index on sift_table using hnsw(sift_vector hnsw_vector_inner_product_ops) with(dimension=128, distmethod=inner_product);
+
+-- Create the index if it doesn't exist
+DO
+$$
+BEGIN
+   IF NOT EXISTS (
+      SELECT FROM pg_indexes
+      WHERE tablename = 'sift_table' AND indexname = 'bindex'
+   ) THEN
+      CREATE INDEX bindex ON sift_table(popularity);
+   END IF;
+END
+$$;
+
