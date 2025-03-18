@@ -31,6 +31,8 @@ def parse_result(path_result,ids):
                         res_map[ids[n-1]]=res_score
                         break
                     else:
+                        if not next_line.strip():  # Skip empty lines
+                            continue
                         if next_line.find('|')!=-1:
                             s_id=int(next_line.split('|')[0])
                         else:
