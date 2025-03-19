@@ -15,4 +15,6 @@ for dist in "${distributions[@]}"; do
 done
 
 # 3. Convert queries fvecs file to tsv file
-python3 data_prepare/convert_fvecs_queries.py
+python data_prepare/convert_fvecs_queries.py
+
+rm -rf raw_data
