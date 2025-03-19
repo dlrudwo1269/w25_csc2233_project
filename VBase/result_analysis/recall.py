@@ -27,6 +27,8 @@ def parse_result(path_result,ids):
                 res_score=[]
                 while next_line.find("row")==-1:
                     next_line=f.readline()
+                    if not next_line:  # EOF check
+                        break
                     if next_line.find("row")!=-1:
                         res_map[ids[n-1]]=res_score
                         break
