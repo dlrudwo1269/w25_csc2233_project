@@ -22,6 +22,8 @@ def sample_popularity(distribution, rng):
         return rng.normal(loc=5000, scale=1000)
     elif distribution == "zipfian":
         return rng.zipf(a=2.0)
+    elif distribution == "zipfian_flat":
+        return rng.zipf(a=1.1)
     elif distribution == "log_normal":
         return rng.lognormal(mean=np.log(5000), sigma=np.log(1000))
     raise ValueError(f"Unknown distribution: {distribution}")
@@ -56,7 +58,7 @@ def main(fvecs_path, output_tsv_directory, output_selectivity_stats_directory, p
     distribution_stats_path = output_selectivity_stats_directory + distribution_stats_filename
     with open(distribution_stats_path, "w") as f:
         f.write(f"Popularity distribution: min={popularities[0]}, max={popularities[-1]}\n")
-        percentiles = [1, 10, 50, 90, 99, 100]
+        percentiles = [1, 10, 50, 90, 99]
         np.percentile(popularities, percentiles)
         for percentile in percentiles:
             f.write(f"Popularity {percentile}th percentile: {np.percentile(popularities, percentile)}\n")
@@ -78,7 +80,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--popularity_distribution",
-        choices=["normal", "zipfian", "uniform", "log_normal"],
+        choices=["normal", "zipfian", "zipfian_flat", "uniform", "log_normal"],
         required=True,
         help="Distribution to sample the popularity metadata from"
     )

@@ -8,7 +8,7 @@ wget -nc -P raw_data https://huggingface.co/datasets/qbo-odp/sift1m/resolve/main
 # 2. Convert base vector fvec files to tsv format with added popularity metadata
 mkdir -p processed_data
 mkdir -p processed_data/base_vectors
-distributions=("normal" "zipfian" "uniform" "log_normal")
+distributions=("normal" "zipfian" "zipfian_flat" "uniform" "log_normal")
 for dist in "${distributions[@]}"; do
     echo "Processing $dist distribution"
     python3 data_prepare/convert_fvecs_base_vectors.py --popularity_distribution "$dist"
