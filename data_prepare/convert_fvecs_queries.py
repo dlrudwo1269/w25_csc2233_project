@@ -11,7 +11,7 @@ def read_fvecs(fvecs_path):
     """
     data = np.fromfile(fvecs_path, dtype='int32')
     dim = data[0]
-    return data.reshape(-1, dim + 1)[:, 1:].astype('float32')
+    return data.reshape(-1, dim + 1)[:, 1:].copy().view('float32')
 
 
 def main(fvecs_path, output_path):
