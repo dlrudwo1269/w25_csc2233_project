@@ -179,4 +179,4 @@ processed_data/
 sql/
 
 msvbase_install/
-
+*/.out

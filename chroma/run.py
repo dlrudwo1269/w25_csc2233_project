@@ -5,7 +5,7 @@ import time
 import chromadb
 
 
-SELECTIVITIES = [1, 10, 50, 90, 99, 100]
+SELECTIVITIES = [1, 10, 50, 90, 99]
 
 
 def read_selectivity_stats(stats_path):
@@ -76,6 +76,8 @@ def setup_chromadb_collection(collection_name, ids, embeddings, popularities):
             embeddings=embeddings[i:i+batch_size],
             metadatas=popularities[i:i+batch_size],
         )
+        if collection.count() % (40000 * 5) == 0:
+            print(f"Indexed {collection.count()} items in collection.")
     print(f"Done indexing. {collection.count()} items in collection.")
     return collection
 
@@ -84,6 +86,8 @@ def run_queries(queries, collection, popularity_threshold, top_k):
     all_results = []
     errors = 0
     for query in queries:
+        if len(all_results) % 100 == 0:
+            print(f"Processed {len(all_results)} queries")
         try:
             start_time = time.time()
             topk_results = collection.query(
@@ -144,7 +148,7 @@ if  __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--popularity_distribution",
-        choices=["normal", "zipfian", "uniform", "log_normal"],
+        choices=["normal", "zipfian", "zipfian_flat", "uniform", "log_normal"],
         required=True,
         help="Distribution over which the popularity metadata is sampled"
     )
