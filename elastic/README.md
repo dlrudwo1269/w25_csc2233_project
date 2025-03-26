@@ -12,5 +12,8 @@ cd elasticsearch-8.17.4/
 echo node.store.allow_mmap: false >> config/elasticsearch.yml 
 ```
 
-## Run Experiment
-Configure `HOME_DIR` in `run.sh` and run `elasticsearch/run.sh <distribution>`. This will start the elasticsearch server as a daemon in the background and connect to it using a Python client to index the data and save the query results to `elasticsearch/.out`.
+## Configuration
+Start the Elasticsearch server by running `elasticsearch-8.17.4/bin/elasticsearch`. Running the executable for the first time will initialize various settings, as well as generate a password and a CA certificate. Look in the logs for a password, and make it available as an environment variable called `ELASTIC_PASSWORD`. Additionally, set `ES_HOME` as the path for `elasticsearch-8.17.3`.
+
+## Run
+Configure the directories in `run.sh` and run `elasticsearch/run.sh <distribution>`. This will start the elasticsearch server as a daemon in the background and connect to it using a Python client to index the data and save the query results to `elasticsearch/.out`.
