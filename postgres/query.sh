@@ -27,7 +27,7 @@ while [[ $# -gt 0 ]]; do
       echo "Unknown option: $1"
       echo "Usage: $0 [--selectivity VALUE] [--distribution TYPE] [--top_k VALUE]"
       echo "  --selectivity: Selectivity value (must be one of: 1, 10, 50, 90, 99, 100)"
-      echo "  --distribution: Distribution type (must be one of: normal, zipfian, uniform, log_normal)"
+      echo "  --distribution: Distribution type (must be one of: normal, zipfian, zipfian_flat, uniform, log_normal)"
       echo "  --top_k: Number of top results to retrieve (default: 50)"
       exit 1
       ;;
@@ -42,8 +42,8 @@ if [[ ! "$SELECTIVITY" =~ ^(1|10|50|90|99|100)$ ]]; then
 fi
 
 # Validate distribution value
-if [[ ! "$DISTRIBUTION" =~ ^(normal|zipfian|uniform|log_normal)$ ]]; then
-  echo "Error: Distribution must be one of: normal, zipfian, uniform, log_normal"
+if [[ ! "$DISTRIBUTION" =~ ^(normal|zipfian|zipfian_flat|uniform|log_normal)$ ]]; then
+  echo "Error: Distribution must be one of: normal, zipfian, zipfian_flat, uniform, log_normal"
   echo "You provided: $DISTRIBUTION"
   exit 1
 fi
@@ -96,5 +96,3 @@ echo "Running query and saving output to $OUTPUT_FILE"
 "$PG_INSTALL_DIR/bin/psql" -d vectordb -f "$SQL_PATH" > "$OUTPUT_FILE"
 
 echo "Query completed. Results saved to $OUTPUT_FILE"
-
-
