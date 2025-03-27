@@ -42,8 +42,8 @@ if [[ ! "$SELECTIVITY" =~ ^(1|10|50|90|99|100)$ ]]; then
 fi
 
 # Validate distribution value
-if [[ ! "$DISTRIBUTION" =~ ^(normal|zipfian|uniform|log_normal)$ ]]; then
-  echo "Error: Distribution must be one of: normal, zipfian, uniform, log_normal"
+if [[ ! "$DISTRIBUTION" =~ ^(normal|zipfian|uniform|log_normal|zipfian_flat)$ ]]; then
+  echo "Error: Distribution must be one of: normal, zipfian, uniform, log_normal, zipfian_flat"
   echo "You provided: $DISTRIBUTION"
   exit 1
 fi

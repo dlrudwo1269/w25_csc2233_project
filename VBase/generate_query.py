@@ -83,7 +83,7 @@ if  __name__ == "__main__":
     )
     parser.add_argument(
         "--popularity_distribution",
-        choices=["normal", "zipfian", "uniform", "log_normal"],
+        choices=["normal", "zipfian", "uniform", "log_normal", "zipfian_flat"],
         help="Distribution over which the popularity metadata is sampled"
     )
     parser.add_argument(
