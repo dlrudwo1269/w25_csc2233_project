@@ -3,7 +3,6 @@
 HOME_DIR="/w/331/kjlee"
 
 source $HOME_DIR/w25_csc2233_project/.venv/bin/activate
-echo "Using python: $(which python)"
 
 export PYTHONUNBUFFERED=1
 
