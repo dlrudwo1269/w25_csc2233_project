@@ -82,28 +82,49 @@ def setup_chromadb_collection(collection_name, ids, embeddings, popularities):
     return collection
 
 
-def run_queries(queries, collection, popularity_threshold, top_k):
+def run_queries(queries, collection, popularity_threshold, top_k, selectivity):
+    """
+    For each query, fetch an expanded candidate set (top_k multiplied by 100/selectivity),
+    then post-filter the results based on the popularity threshold.
+    """
     all_results = []
     errors = 0
+    # Compute multiplier: if selectivity is 1 (i.e. 1%), then fetch 100 * top_k results.
+    multiplier = 100 / selectivity
+    fetch_count = int(multiplier * top_k)
+    
     for query in queries:
         if len(all_results) % 100 == 0:
             print(f"Processed {len(all_results)} queries")
         try:
             start_time = time.time()
-            topk_results = collection.query(
+            # Query without pre-filtering; include metadatas to post-filter.
+            query_response = collection.query(
                 query_embeddings=[query],
-                n_results=top_k,
-                where={"popularity" : {"$lte": popularity_threshold}},
-                include=[],
-            )["ids"][0]
+                n_results=fetch_count,
+                include=["metadatas"],
+            )
+            # We only have a single query vector, so we need to index out the (only) result from the nested list
+            candidate_ids = query_response["ids"][0]
+            candidate_metadatas = query_response["metadatas"][0]
+            # Post-filter based on the popularity threshold.
+            filtered_ids = []
+            for cid, metadata in zip(candidate_ids, candidate_metadatas):
+                if metadata["popularity"] <= popularity_threshold:
+                    filtered_ids.append(cid)
+                if len(filtered_ids) == top_k:
+                    break
             end_time = time.time()
-            latency = (end_time - start_time) * 1000 # convert to ms
-        except RuntimeError: # Chroma errors when it cannot retrieve K results
+            latency = (end_time - start_time) * 1000  # convert to ms
+            # If not enough results were found, pad with -1.
+            if len(filtered_ids) < top_k:
+                filtered_ids.extend([-1] * (top_k - len(filtered_ids)))
+        except RuntimeError:
             errors += 1
-            topk_results = [-1] * 50 # Use -1 to indicate invalid ids (we generate ids starting from 1)
+            filtered_ids = [-1] * top_k
             end_time = time.time()
             latency = (end_time - start_time) * 1000
-        all_results.append((topk_results, latency))
+        all_results.append((filtered_ids, latency))
     
     if errors:
         print(f"{errors} errors on collection {collection.name} with threshold {popularity_threshold}")
@@ -126,12 +147,12 @@ def main(popularity_distribution, queries_path, selectivity_stats_path, data_pat
     # Run queries
     for selectivity in SELECTIVITIES:
         popularity_threshold = selectivity_stats[selectivity]
-        all_results = run_queries(queries, collection, popularity_threshold, top_k)
+        results = run_queries(queries, collection, popularity_threshold, top_k, selectivity)
 
         # Log results
         filename = f"chroma_{popularity_distribution}_{selectivity}.out"
         with open(os.path.join(output_dir, filename), "w", encoding="utf8") as out:
-            for top_k_vectors, latency in all_results:
+            for top_k_vectors, latency in results:
                 # Match format of VBase eval pipeline
                 out.write("Timing is on.\n")
                 out.write("vector_id\n") 
@@ -143,8 +164,8 @@ def main(popularity_distribution, queries_path, selectivity_stats_path, data_pat
                 out.write("Timing is off.\n")
 
 
-if  __name__ == "__main__":
-    # Usage: python chroma/run.py --popularity_distribution [DISTRIBUTION]  --output_path ./chroma/.out
+if __name__ == "__main__":
+    # Usage: python chroma/run.py --popularity_distribution [DISTRIBUTION] --output_dir ./chroma/.out
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--popularity_distribution",
