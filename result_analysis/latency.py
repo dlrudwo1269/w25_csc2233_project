@@ -37,4 +37,5 @@ if  __name__ == "__main__":
     parser.add_argument('--path-result', type=str, default="./groundtruth/result_gt/query_1_gt.out", help='path to result')
     
     args = parser.parse_args()
+    print(f"Result filename: {args.path_result}")
     latency = get_latency(args.path_result)

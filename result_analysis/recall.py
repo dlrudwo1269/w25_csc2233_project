@@ -9,8 +9,8 @@ def get_id(path_id):
     with open(path_id, 'r', encoding="utf8") as f_data:
         ids=[]
         tsv_data= csv.reader(f_data, delimiter="\t")
-        for row in tsv_data:
-            ids.append(row[0])  # Only take the first column (ID)
+        for i, (id) in enumerate(tsv_data):
+            ids.append(i)
         return ids
 
 def parse_result(path_result,ids):
@@ -27,14 +27,10 @@ def parse_result(path_result,ids):
                 res_score=[]
                 while next_line.find("row")==-1:
                     next_line=f.readline()
-                    if not next_line:  # EOF check
-                        break
                     if next_line.find("row")!=-1:
                         res_map[ids[n-1]]=res_score
                         break
                     else:
-                        if not next_line.strip():  # Skip empty lines
-                            continue
                         if next_line.find('|')!=-1:
                             s_id=int(next_line.split('|')[0])
                         else:
@@ -72,15 +68,17 @@ if  __name__ == "__main__":
                         help='path to gt')
     parser.add_argument('--path-query', type=str, default="./result/query_1_pase.out",
                         help='path to query result')
-
     args = parser.parse_args()
+    print(f"GT filename: {args.path_gt}")
 
-    ids=get_id(args.path_id)
+    ids=range(0, 10000)
+    # print("Number of query IDs:", len(ids))
     query_map=parse_result(args.path_query,ids)
     #print("query len",len(query_map.keys()))
     #print(query_map['12'])
     gt_map=parse_result(args.path_gt,ids)
     #print(gt_map['12'])
+
 
     effective=0
     sum_recall=0.0
@@ -88,12 +86,17 @@ if  __name__ == "__main__":
         #if effective>=5000:
         #    break
         effective+=1
-        sum_recall+=recall(gt_map,query_map,id)
         c = recall(gt_map,query_map,id)
-        #print(effective)
-        #if c < 0.9:
-        #    print(id)
-        #    print(c)
+        sum_recall+=c
+        
+        # Print details for mismatched rows
+        # if c < 1.0:
+        #     print(f"ID: {id}")
+        #     print(f"Ground Truth: {gt_map[id]}")
+        #     print(f"Query Result: {query_map[id]}")
+        #     print(f"Recall: {c}")
+        #     print("---")
+            
     avg_recall=sum_recall/(effective*1.0)
     #print(f"{effective} counted.")
     print("Recall: ", round(avg_recall,4))

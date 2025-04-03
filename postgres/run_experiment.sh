@@ -28,11 +28,11 @@ chmod +x $PWD/setup.sh
 
 # Run setup.sh and check if it succeeds
 echo "Running setup.sh..."
-if ! $PWD/setup.sh; then
+if ! $PWD/postgres/setup.sh; then
     echo "Setup failed. Retrying once..."
     sleep 3
     # Retry setup.sh once
-    if ! $PWD/setup.sh; then
+    if ! $PWD/postgres/setup.sh; then
         echo "Setup failed again. Exiting."
         exit 1
     fi
@@ -44,10 +44,10 @@ fi
 # rm -rf raw_data
 
 # Make the PostgreSQL run script executable
-chmod +x $PWD/VBase/run.sh
+chmod +x $PWD/postgres/run_pg.sh
 
 # Run the PostgreSQL script with the parameters
-$PWD/VBase/run.sh --distribution $DISTRIBUTION --selectivity $SELECTIVITY
+$PWD/postgres/run_pg.sh --distribution $DISTRIBUTION --selectivity $SELECTIVITY
 
 # Clean up the table after experiment is done
 echo "Cleaning up the sift_table..."

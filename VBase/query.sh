@@ -53,7 +53,7 @@ echo "Running query with selectivity=$SELECTIVITY, distribution=$DISTRIBUTION, t
 # Define paths
 PG_INSTALL_DIR="$PROJECT_DIR/msvbase_install/postgres"
 RESULT_DIR="$PROJECT_DIR/result"
-SQL_DIR="$PROJECT_DIR/vbase/sql"
+SQL_DIR="$PROJECT_DIR/VBase/sql"
 OUTPUT_FILE="$RESULT_DIR/vbase_${DISTRIBUTION}_${SELECTIVITY}.out"
 SQL_FILE="${DISTRIBUTION}_threshold${SELECTIVITY}_query.sql"
 SQL_PATH="$SQL_DIR/$SQL_FILE"

@@ -33,7 +33,9 @@ def query_generate(queries_path, selectivity, selectivity_stats_path, output_pat
         idx = 0
         out.write("\\c vectordb;\n\n")
         out.write("create index if not exists bindex on sift_table(popularity);\n");
+        out.write("SELECT tablename, indexname, indexdef FROM pg_indexes WHERE schemaname = 'public';\n");
         out.write("set enable_seqscan=off;\n")
+        out.write("set enable_bitmapscan=off;\n")
         out.write("set enable_indexscan=on;\n")
 
         for embedding in f_emb:
@@ -57,7 +59,8 @@ def query_generate(queries_path, selectivity, selectivity_stats_path, output_pat
                 
                 # Format the array properly for PostgreSQL
                 formatted_embedding = "ARRAY[" + ", ".join(str(val) for val in values) + "]"
-                
+                if idx == 0:
+                    out.write(f"explain select vector_id from sift_table where (popularity<={popularity_threshold}) order by sift_vector<*>{formatted_embedding} limit {top_k};\n")
                 out.write("\\timing on\n")
                 out.write(f"select vector_id from sift_table where (popularity<={popularity_threshold}) order by sift_vector<*>{formatted_embedding} limit {top_k};\n")
                 out.write("\\timing off\n")
